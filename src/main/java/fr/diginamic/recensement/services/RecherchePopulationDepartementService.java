@@ -1,6 +1,8 @@
 package fr.diginamic.recensement.services;
 
 import java.util.List;
+
+import exception.CodeException;
 import java.util.Scanner;
 
 import org.apache.commons.lang3.math.NumberUtils;
@@ -15,7 +17,7 @@ import fr.diginamic.recensement.entites.Ville;
 public class RecherchePopulationDepartementService extends MenuService {
 
 	@Override
-	public void traiter(Recensement rec, Scanner scanner) {
+	public void traiter(Recensement rec, Scanner scanner) throws CodeException {
 		
 		System.out.println("Quel est le code du département recherché ? ");
 		String choix = scanner.nextLine();
@@ -24,12 +26,16 @@ public class RecherchePopulationDepartementService extends MenuService {
 			throw new RuntimeException("Le département doit être un entier.");
 		}
 		
+		
 		List<Ville> villes = rec.getVilles();
 		int somme = 0;
 		for (Ville ville: villes){
 			if (ville.getCodeDepartement().equalsIgnoreCase(choix)){
 				somme+=ville.getPopulation();
 			}
+		}
+		if(!villes.contains(choix)) {
+			throw new CodeException("Le département n'est pas valide");
 		}
 		if (somme>0){
 			System.out.println("Population du département "+choix+" : "+ somme);
